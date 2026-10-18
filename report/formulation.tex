@@ -1,0 +1,172 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Aset}{\mathcal{A}}
+
+\title{RL for Sequential Recommendation:\\ Problem Formulation and First Results}
+\author{Course project, topic 3.9}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We cast supervised (short-term) and reinforcement-learning (long-term) recommenders as two solutions of a single
+episodic combinatorial MDP with multinomial-logit (MNL) user choice, following Lee \& Oh (ICML 2025).
+In this model the supervised next-click recommender is exactly the myopic ($\gamma = 0$) policy, the RL recommender
+is the $\gamma > 0$ policy, and the slate size $K$ is an explicit parameter ($K = 1$ is classic sequential
+recommendation, $K > 1$ is re-ranking). We prove two results that bound when RL can help:
+a myopic policy can be arbitrarily worse than optimal on long-term return (a dual of Theorem 4.3 of
+Silva et al., ICML 2024), and RL has no advantage at all when the user's state transition does not depend on what
+the user chose.
+\end{abstract}
+
+\section{Combinatorial MDP with MNL preference feedback}
+
+\begin{definition}[Combinatorial MDP with MNL choice]
+An episodic combinatorial MDP is a tuple $\mathcal{M} = (\Sset, \I, \Aset_K, \{P_h\}, \{r_h\}, \{p_h\}, H)$:
+\begin{itemize}
+  \item $\Sset$ is the set of user states (static features, recent history, and latent variables such as
+  satisfaction or fatigue that the recommender may not observe);
+  \item $\I = \{a_0, a_1, \dots, a_N\}$ is the item set, where $a_0$ is the outside option (``no click'');
+  \item $\Aset_K = \{A \subseteq \I : a_0 \in A,\ 1 \le |A \setminus \{a_0\}| \le K\}$ is the set of slates;
+  \item $P_h(a \mid s, A)$ is the probability that the user picks item $a \in A$;
+  \item $p_h(s' \mid s, a)$ and $r_h(s, a)$ are the transition and reward after the user picks $a$;
+  \item $H$ is the horizon (session length cap).
+\end{itemize}
+At step $h$ the recommender observes $s_h$, offers $A_h$, the user picks $a_h \sim P_h(\cdot \mid s_h, A_h)$,
+the recommender receives $r_h(s_h, a_h)$ and the state moves to $s_{h+1} \sim p_h(\cdot \mid s_h, a_h)$.
+\end{definition}
+
+\paragraph{MNL choice (Lee \& Oh, Assumption 3.1).} With utilities $v(s,a) = \phi(s,a)^\top \theta$ and
+$v(s, a_0) = 0$,
+\begin{equation}
+P(a \mid s, A) = \frac{\exp(v(s,a))}{1 + \sum_{a' \in A \setminus \{a_0\}} \exp(v(s,a'))}, \qquad a \in A.
+\end{equation}
+In our simulator the utility also depends on latent fatigue $f$:
+$v(s,a) = \phi(s,a)^\top\theta - \lambda_f f \, \mathrm{sim}(a, \text{recent history})$.
+
+\paragraph{Values.} For a policy $\pi = (\pi_1, \dots, \pi_H)$ and discount $\gamma \in [0,1]$,
+the item-level and slate-level action values satisfy (Lee \& Oh, Sec.~3.1)
+\begin{align}
+\bar Q^\pi_h(s, a) &= r_h(s,a) + \gamma \sum_{s'} p_h(s' \mid s, a)\, V^\pi_{h+1}(s'), \\
+Q^\pi_h(s, A) &= \sum_{a \in A} P_h(a \mid s, A)\, \bar Q^\pi_h(s, a), \qquad V^\pi_{H+1} \equiv 0.
+\end{align}
+The optimal policy maximises $V_1(s_1)$; the decomposition means only item-level values need to be learned,
+and the slate is chosen by maximising a ratio of linear functions, which is a linear program
+(Lee \& Oh, Appendix C) or, equivalently, a one-dimensional bisection.
+
+\paragraph{Short-term and long-term metrics.} With $r = 1$ for a click and $0$ for $a_0$:
+the short-term metric is the click-through rate of the first slate, $\mathrm{CTR}(\pi) = 1 - P(a_0 \mid s_1, \pi_1(s_1))$;
+the long-term metric is the expected number of clicks in a session, $V^\pi_1(s_1)$ with $\gamma = 1$, together with
+session length (steps before the user leaves).
+
+\section{Supervised recommendation is the myopic policy}
+
+\begin{definition}[Myopic policy]
+The myopic policy chooses, in every state, $\pi^{\mathrm{my}}_h(s) \in \arg\max_{A \in \Aset_K}
+\sum_{a \in A} P_h(a \mid s, A)\, r_h(s, a)$, i.e.\ the $\gamma = 0$ solution.
+\end{definition}
+
+\begin{lemma}[Supervised top-$K$ = myopic]\label{lem:sup}
+Let rewards be $r(s,a) = 1$ for every item $a \neq a_0$ and $r(s, a_0) = 0$. Then the myopic slate is the set of
+$K$ items with the largest utilities $v(s,a)$. In particular, a next-click model trained with cross-entropy that
+recovers the MNL utilities (up to an additive constant) and recommends its top-$K$ scores is the myopic policy.
+\end{lemma}
+\begin{proof}
+For a slate $A$ let $W(A) = \sum_{a \in A \setminus\{a_0\}} e^{v(s,a)}$. The expected immediate reward is
+$\sum_{a \neq a_0} P(a \mid s, A) = W(A) / (1 + W(A))$, which is increasing in $W(A)$. Since every weight is
+positive, $W$ is maximised over slates of at most $K$ items by the $K$ largest weights, i.e.\ the $K$ largest
+utilities. The softmax next-click model $P(a \mid s) \propto e^{v(s,a)}$ is invariant to adding a constant to all
+utilities, so its ranking equals the utility ranking.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:sup} is what lets us compare ``supervised vs RL'' inside one model: the topic's question becomes
+``when is the $\gamma > 0$ optimal policy much better than the $\gamma = 0$ policy on long-term return?''
+\end{remark}
+
+\section{When RL can and cannot help}
+
+\begin{proposition}[Myopic can be arbitrarily worse on long-term return]\label{prop:dual}
+For every $n > 1$ there is a combinatorial MDP with MNL choice, unit click rewards and $\gamma = 1$ such that
+$V^*_1(s_1) > n\, V^{\mathrm{my}}_1(s_1)$.
+\end{proposition}
+\begin{proof}
+Take $\Sset = \{\mathrm{on}, \mathrm{off}\}$ with $\mathrm{off}$ absorbing and reward-free, $K = 1$, and two items:
+a good item $g$ with utility $v_g$ and a junk item $j$ with utility $v_j > v_g$. Write
+$c_x = e^{v_x}/(1 + e^{v_x})$ for the click probability of a slate holding item $x$, so $c_j > c_g$.
+Clicking $j$ moves the user to $\mathrm{off}$ (the user leaves); clicking $g$ or not clicking keeps the user $\mathrm{on}$.
+Rewards are 1 per click. By Lemma~\ref{lem:sup} the myopic policy offers $j$ in every step. Its return is the
+number of clicks until the first click, which is at most 1, so $V^{\mathrm{my}}_1(\mathrm{on}) \le 1$
+(precisely $1 - (1 - c_j)^H$). The policy that always offers $g$ never leaves $\mathrm{on}$ and collects
+$H c_g$ in expectation, so $V^*_1(\mathrm{on}) \ge H c_g$. Choosing $H > n / c_g$ gives
+$V^*_1 / V^{\mathrm{my}}_1 \ge H c_g > n$.
+\end{proof}
+
+\begin{remark}
+Silva et al.\ (Theorem 4.3) show the converse direction for one-step metrics: an optimal RL policy can be
+arbitrarily worse than the cross-entropy model on next-item-prediction metrics. Together the two results say that
+neither objective dominates; which recommender ``wins'' is decided by the evaluation metric and by the
+dynamics, which motivates evaluating both short-term CTR and long-term return.
+\end{remark}
+
+\begin{proposition}[No advantage without choice-dependent dynamics]\label{prop:noadv}
+Suppose that for every $h$ and $s$ the transition does not depend on the item chosen,
+$p_h(\cdot \mid s, a) = p_h(\cdot \mid s)$ for all $a \in \I$ (including $a_0$). Then for every $\gamma \in [0,1]$
+the myopic policy is optimal: $V^{\mathrm{my}}_1 = V^*_1$.
+\end{proposition}
+\begin{proof}
+Let $c_h(s) = \gamma \sum_{s'} p_h(s' \mid s) V^*_{h+1}(s')$, which does not depend on the chosen item. Then for every
+slate $A$,
+\[
+Q^*_h(s, A) = \sum_{a \in A} P_h(a \mid s, A) \bigl(r_h(s,a) + c_h(s)\bigr)
+= \sum_{a \in A} P_h(a \mid s, A)\, r_h(s,a) + c_h(s),
+\]
+because the choice probabilities over $A$ (including $a_0$) sum to one. The second term is the same for every
+slate, so $\arg\max_A Q^*_h(s, A)$ is exactly the myopic slate at every $(h, s)$. A policy that is greedy with
+respect to $Q^*$ at every step is optimal, hence so is the myopic policy.
+\end{proof}
+
+\begin{corollary}
+An RL recommender can improve long-term utility over a supervised one only if what the user picks changes the
+distribution of the user's future state (satisfaction, fatigue, leaving). Measuring how strongly the
+dynamics depend on the choice is therefore the first axis of our regime map.
+\end{corollary}
+
+\section{Slate size: a two-type toy model (to be analysed for the end-semester)}
+
+Consider good items (utility $v_g$, the user stays after a click) and junk items (utility $v_j > v_g$,
+the user leaves with probability $p$ after clicking one); with no click the user leaves with probability $p_0$.
+A stationary slate holds $k$ junk and $K - k$ good items. Its click probability and per-step exit probability are
+\[
+c(k) = \frac{k e^{v_j} + (K-k) e^{v_g}}{1 + k e^{v_j} + (K-k) e^{v_g}}, \qquad
+e(k) = p\, \frac{k e^{v_j}}{1 + k e^{v_j} + (K-k) e^{v_g}} + p_0\,(1 - c(k)),
+\]
+and its discounted long-term value is $V(k) = c(k) / \bigl(1 - \gamma(1 - e(k))\bigr)$.
+The myopic policy uses the largest feasible $k$ (since $c(k)$ increases in $k$); the optimal stationary policy
+maximises $V(k)$. The ratio $V(k^*)/V(k^{\mathrm{my}})$ as a function of $K$, $p$, $v_j - v_g$ and $\gamma$
+is our prediction for how slate size changes the RL advantage; it will be compared with the simulator in the
+second half of the project.
+
+\section*{References}
+\begin{itemize}
+\item \'A.~Labarca, D.~Parra, R.~Toro Icarte. On the Unexpected Effectiveness of Reinforcement Learning for
+Sequential Recommendation. ICML 2024.
+\item J.~Lee, M.~Oh. Combinatorial Reinforcement Learning with Preference Feedback. ICML 2025.
+\item Z.~Yuan, Q.~Wan, T.~Zhang, C.~Huo. PISDR: Page and Item Sequential Decision for Re-ranking Based on Offline
+Reinforcement Learning. ACML 2024.
+\item X.~Xin, A.~Karatzoglou, I.~Arapakis, J.~Jose. Self-Supervised Reinforcement Learning for Recommender
+Systems (SQN). SIGIR 2020.
+\end{itemize}
+\end{document}

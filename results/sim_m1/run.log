@@ -1,0 +1,68 @@
+s=0.0 seed=0: 152682 logged transitions (14s)
+dqn step 500: eps 0.74 loss 0.1111 buffer 67501
+dqn step 1000: eps 0.47 loss 0.1464 buffer 135059
+dqn step 1500: eps 0.21 loss 0.1575 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1460 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1256 buffer 200000
+  popular    ctr1 0.217  return 3.01  len 15.6  junk 0.00
+  supervised ctr1 0.211  return 3.07  len 15.6  junk 1.88
+  sqn        ctr1 0.220  return 3.24  len 15.6  junk 2.22
+  cql        ctr1 0.193  return 2.94  len 15.6  junk 0.32
+  dqn        ctr1 0.220  return 3.24  len 15.6  junk 1.76
+  myopic     ctr1 0.451  return 6.11  len 15.6  junk 5.02
+  quality    ctr1 0.338  return 4.86  len 15.6  junk 0.00
+s=0.25 seed=0: 100870 logged transitions (14s)
+dqn step 500: eps 0.74 loss 0.1424 buffer 43034
+dqn step 1000: eps 0.47 loss 0.2402 buffer 86669
+dqn step 1500: eps 0.21 loss 0.2108 buffer 129442
+dqn step 2000: eps 0.05 loss 0.2487 buffer 172222
+dqn step 2500: eps 0.05 loss 0.2100 buffer 200000
+  popular    ctr1 0.217  return 2.06  len 10.8  junk 0.00
+  supervised ctr1 0.217  return 1.91  len 9.6  junk 1.24
+  sqn        ctr1 0.214  return 1.87  len 9.5  junk 1.25
+  cql        ctr1 0.192  return 1.84  len 10.4  junk 0.26
+  dqn        ctr1 0.199  return 1.80  len 10.0  junk 0.77
+  myopic     ctr1 0.451  return 3.29  len 8.6  junk 2.69
+  quality    ctr1 0.338  return 3.28  len 11.3  junk 0.00
+s=0.5 seed=0: 74929 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1551 buffer 31045
+dqn step 1000: eps 0.47 loss 0.3720 buffer 62336
+dqn step 1500: eps 0.21 loss 0.4813 buffer 92829
+dqn step 2000: eps 0.05 loss 0.4358 buffer 124293
+dqn step 2500: eps 0.05 loss 0.3369 buffer 156334
+  popular    ctr1 0.217  return 1.62  len 8.5  junk 0.00
+  supervised ctr1 0.217  return 1.34  len 6.8  junk 0.84
+  sqn        ctr1 0.217  return 1.34  len 6.8  junk 0.77
+  cql        ctr1 0.187  return 1.38  len 7.8  junk 0.21
+  dqn        ctr1 0.190  return 1.28  len 7.4  junk 0.44
+  myopic     ctr1 0.451  return 2.24  len 5.8  junk 1.82
+  quality    ctr1 0.338  return 2.68  len 9.9  junk 0.00
+s=1.0 seed=0: 51366 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1681 buffer 21248
+dqn step 1000: eps 0.47 loss 0.6460 buffer 41744
+dqn step 1500: eps 0.21 loss 1.3563 buffer 63637
+dqn step 2000: eps 0.05 loss 1.5181 buffer 85043
+dqn step 2500: eps 0.05 loss 1.5700 buffer 105714
+  popular    ctr1 0.217  return 1.19  len 6.4  junk 0.00
+  supervised ctr1 0.207  return 0.82  len 4.1  junk 0.51
+  sqn        ctr1 0.213  return 0.84  len 4.3  junk 0.44
+  cql        ctr1 0.196  return 0.98  len 5.6  junk 0.08
+  dqn        ctr1 0.185  return 0.80  len 4.8  junk 0.23
+  myopic     ctr1 0.451  return 1.42  len 3.5  junk 1.18
+  quality    ctr1 0.338  return 2.05  len 8.6  junk 0.00
+s=0.0 seed=1: 151032 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.0939 buffer 68339
+dqn step 1000: eps 0.47 loss 0.1353 buffer 134476
+dqn step 1500: eps 0.21 loss 0.1341 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1177 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1602 buffer 200000
+  popular    ctr1 0.218  return 3.05  len 15.6  junk 0.00
+  supervised ctr1 0.217  return 3.18  len 15.6  junk 1.91
+  sqn        ctr1 0.228  return 3.26  len 15.6  junk 2.12
+  cql        ctr1 0.190  return 2.96  len 15.6  junk 0.48
+  dqn        ctr1 0.222  return 3.27  len 15.6  junk 2.09
+  myopic     ctr1 0.450  return 6.13  len 15.6  junk 4.99
+  quality    ctr1 0.338  return 4.92  len 15.6  junk 0.00
+s=0.25 seed=1: 100563 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1165 buffer 44295
+dqn step 1000: eps 0.47 loss 0.2434 buffer 86903
