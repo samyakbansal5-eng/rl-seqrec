@@ -1,0 +1,16 @@
+body { font-family: "DejaVu Serif", Georgia, serif; font-size: 10.5pt; line-height: 1.42; color: #111; max-width: 100%; margin: 0; }
+h1 { font-size: 14pt; margin: 1.1em 0 0.4em; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+header h1.title { font-size: 18pt; border: none; margin-bottom: 0.1em; }
+p.subtitle { font-size: 12pt; margin: 0 0 0.3em; color: #333; }
+p.author, p.date { margin: 0; color: #444; }
+nav#TOC { font-size: 9.5pt; margin: 0.8em 0; }
+nav#TOC ul { padding-left: 1.2em; margin: 0; }
+table { border-collapse: collapse; margin: 0.6em 0; font-size: 9pt; width: 100%; page-break-inside: avoid; }
+th, td { border-bottom: 1px solid #ddd; padding: 3px 6px; text-align: left; vertical-align: top; }
+th { border-bottom: 1.5px solid #555; }
+code { font-size: 9pt; background: #f4f4f4; padding: 0 2px; }
+figure { text-align: center; margin: 0.8em 0; page-break-inside: avoid; }
+figure img { max-width: 92%; }
+figcaption { font-size: 9pt; color: #444; }
+math[display="block"] { margin: 0.5em 0; }
+@page { size: A4; margin: 18mm; }

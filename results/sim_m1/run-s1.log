@@ -1,0 +1,99 @@
+s=0.0 seed=1: 151032 logged transitions (26s)
+dqn step 500: eps 0.74 loss 0.1040 buffer 68339
+dqn step 1000: eps 0.47 loss 0.1266 buffer 134476
+dqn step 1500: eps 0.21 loss 0.1238 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1395 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1193 buffer 200000
+  popular    ctr1 0.218  return 3.05  len 15.6  junk 0.00
+  rating     ctr1 0.296  return 4.26  len 15.6  junk 0.24
+  supervised ctr1 0.289  return 4.06  len 15.6  junk 1.85
+  sqn        ctr1 0.280  return 3.90  len 15.6  junk 1.85
+  cql        ctr1 0.253  return 3.48  len 15.6  junk 0.63
+  mnlq       ctr1 0.276  return 3.89  len 15.6  junk 1.64
+  dqn        ctr1 0.305  return 4.34  len 15.6  junk 2.16
+  myopic     ctr1 0.450  return 6.13  len 15.6  junk 4.99
+  quality    ctr1 0.338  return 4.92  len 15.6  junk 0.00
+s=0.25 seed=1: 100563 logged transitions (24s)
+dqn step 500: eps 0.74 loss 0.1080 buffer 43536
+dqn step 1000: eps 0.47 loss 0.1770 buffer 84851
+dqn step 1500: eps 0.21 loss 0.1673 buffer 125829
+dqn step 2000: eps 0.05 loss 0.1749 buffer 168195
+dqn step 2500: eps 0.05 loss 0.1661 buffer 200000
+  popular    ctr1 0.218  return 2.08  len 10.8  junk 0.00
+  rating     ctr1 0.296  return 2.79  len 10.9  junk 0.14
+  supervised ctr1 0.295  return 2.50  len 9.8  junk 1.07
+  sqn        ctr1 0.275  return 2.42  len 10.1  junk 0.73
+  cql        ctr1 0.242  return 2.23  len 10.5  junk 0.36
+  mnlq       ctr1 0.275  return 2.47  len 10.2  junk 0.82
+  dqn        ctr1 0.284  return 2.47  len 9.8  junk 1.13
+  myopic     ctr1 0.450  return 3.35  len 8.6  junk 2.73
+  quality    ctr1 0.338  return 3.32  len 11.3  junk 0.00
+s=0.5 seed=1: 74726 logged transitions (27s)
+dqn step 500: eps 0.74 loss 0.1014 buffer 30031
+dqn step 1000: eps 0.47 loss 0.1760 buffer 59603
+dqn step 1500: eps 0.21 loss 0.1931 buffer 87964
+dqn step 2000: eps 0.05 loss 0.3169 buffer 118083
+dqn step 2500: eps 0.05 loss 0.2610 buffer 147875
+  popular    ctr1 0.218  return 1.59  len 8.4  junk 0.00
+  rating     ctr1 0.296  return 2.19  len 8.9  junk 0.10
+  supervised ctr1 0.291  return 1.77  len 7.0  junk 0.86
+  sqn        ctr1 0.273  return 1.75  len 7.2  junk 0.75
+  cql        ctr1 0.241  return 1.71  len 8.2  junk 0.20
+  mnlq       ctr1 0.266  return 1.83  len 7.9  junk 0.46
+  dqn        ctr1 0.281  return 1.76  len 7.2  junk 0.70
+  myopic     ctr1 0.450  return 2.28  len 5.9  junk 1.85
+  quality    ctr1 0.338  return 2.67  len 9.7  junk 0.00
+s=1.0 seed=1: 50067 logged transitions (21s)
+dqn step 500: eps 0.74 loss 0.0962 buffer 19339
+dqn step 1000: eps 0.47 loss 0.1495 buffer 38367
+dqn step 1500: eps 0.21 loss 0.2347 buffer 58183
+dqn step 2000: eps 0.05 loss 0.2658 buffer 77609
+dqn step 2500: eps 0.05 loss 0.3604 buffer 96873
+  popular    ctr1 0.218  return 1.19  len 6.5  junk 0.00
+  rating     ctr1 0.296  return 1.64  len 7.3  junk 0.07
+  supervised ctr1 0.303  return 1.21  len 4.7  junk 0.59
+  sqn        ctr1 0.287  return 1.20  len 4.9  junk 0.52
+  cql        ctr1 0.242  return 1.24  len 6.1  junk 0.15
+  mnlq       ctr1 0.272  return 1.33  len 5.8  junk 0.31
+  dqn        ctr1 0.275  return 1.21  len 5.2  junk 0.42
+  myopic     ctr1 0.450  return 1.45  len 3.6  junk 1.18
+  quality    ctr1 0.338  return 2.07  len 8.5  junk 0.00
+| strength s | agent | first-slate CTR | clicks / session | session length | junk clicks | seeds |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0.0 | Popularity | 0.217 | 3.05 ± 0.04 | 15.7 | 0.00 | 3 |
+| 0.0 | Highest estimated rating (history model) | 0.295 | 4.25 ± 0.05 | 15.7 | 0.23 | 3 |
+| 0.0 | Supervised (CE) | 0.290 | 4.06 ± 0.01 | 15.7 | 1.91 | 3 |
+| 0.0 | SQN-style (CE + TD aux) | 0.275 | 3.85 ± 0.03 | 15.7 | 1.64 | 3 |
+| 0.0 | Offline RL (CQL) | 0.246 | 3.44 ± 0.03 | 15.7 | 0.70 | 3 |
+| 0.0 | Offline RL (MNL-Q, ours) | 0.271 | 3.89 ± 0.00 | 15.7 | 1.68 | 3 |
+| 0.0 | Online RL (DQN re-ranking top-20) | 0.304 | 4.37 ± 0.03 | 15.7 | 2.23 | 3 |
+| 0.0 | Oracle myopic | 0.450 | 6.17 ± 0.07 | 15.7 | 5.05 | 3 |
+| 0.0 | Oracle quality | 0.338 | 4.93 ± 0.06 | 15.7 | 0.00 | 3 |
+| 0.25 | Popularity | 0.217 | 2.08 ± 0.01 | 10.8 | 0.00 | 3 |
+| 0.25 | Highest estimated rating (history model) | 0.295 | 2.79 ± 0.02 | 10.9 | 0.14 | 3 |
+| 0.25 | Supervised (CE) | 0.291 | 2.47 ± 0.02 | 9.8 | 1.11 | 3 |
+| 0.25 | SQN-style (CE + TD aux) | 0.275 | 2.40 ± 0.02 | 10.1 | 0.84 | 3 |
+| 0.25 | Offline RL (CQL) | 0.242 | 2.22 ± 0.03 | 10.4 | 0.39 | 3 |
+| 0.25 | Offline RL (MNL-Q, ours) | 0.280 | 2.49 ± 0.03 | 10.1 | 0.88 | 3 |
+| 0.25 | Online RL (DQN re-ranking top-20) | 0.285 | 2.46 ± 0.01 | 9.8 | 1.12 | 3 |
+| 0.25 | Oracle myopic | 0.450 | 3.30 ± 0.04 | 8.6 | 2.70 | 3 |
+| 0.25 | Oracle quality | 0.338 | 3.31 ± 0.02 | 11.3 | 0.00 | 3 |
+| 0.5 | Popularity | 0.217 | 1.61 ± 0.01 | 8.4 | 0.00 | 3 |
+| 0.5 | Highest estimated rating (history model) | 0.295 | 2.20 ± 0.01 | 8.9 | 0.10 | 3 |
+| 0.5 | Supervised (CE) | 0.290 | 1.76 ± 0.02 | 7.0 | 0.83 | 3 |
+| 0.5 | SQN-style (CE + TD aux) | 0.283 | 1.75 ± 0.03 | 7.1 | 0.78 | 3 |
+| 0.5 | Offline RL (CQL) | 0.238 | 1.71 ± 0.01 | 8.1 | 0.22 | 3 |
+| 0.5 | Offline RL (MNL-Q, ours) | 0.271 | 1.85 ± 0.04 | 7.7 | 0.50 | 3 |
+| 0.5 | Online RL (DQN re-ranking top-20) | 0.280 | 1.77 ± 0.02 | 7.2 | 0.71 | 3 |
+| 0.5 | Oracle myopic | 0.450 | 2.25 ± 0.02 | 5.8 | 1.83 | 3 |
+| 0.5 | Oracle quality | 0.338 | 2.67 ± 0.01 | 9.7 | 0.00 | 3 |
+| 1.0 | Popularity | 0.218 | 1.19 ± 0.00 | 6.5 | 0.00 | 1 |
+| 1.0 | Highest estimated rating (history model) | 0.296 | 1.64 ± 0.00 | 7.3 | 0.07 | 1 |
+| 1.0 | Supervised (CE) | 0.303 | 1.21 ± 0.00 | 4.7 | 0.59 | 1 |
+| 1.0 | SQN-style (CE + TD aux) | 0.287 | 1.20 ± 0.00 | 4.9 | 0.52 | 1 |
+| 1.0 | Offline RL (CQL) | 0.242 | 1.24 ± 0.00 | 6.1 | 0.15 | 1 |
+| 1.0 | Offline RL (MNL-Q, ours) | 0.272 | 1.33 ± 0.00 | 5.8 | 0.31 | 1 |
+| 1.0 | Online RL (DQN re-ranking top-20) | 0.275 | 1.21 ± 0.00 | 5.2 | 0.42 | 1 |
+| 1.0 | Oracle myopic | 0.450 | 1.45 ± 0.00 | 3.6 | 1.18 | 1 |
+| 1.0 | Oracle quality | 0.338 | 2.07 ± 0.00 | 8.5 | 0.00 | 1 |
+

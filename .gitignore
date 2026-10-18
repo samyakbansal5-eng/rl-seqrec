@@ -6,3 +6,4 @@ results/**/*.npy
 __pycache__/
 .pytest_cache/
 *.pyc
+report/build/

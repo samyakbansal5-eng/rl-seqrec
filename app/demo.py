@@ -29,14 +29,14 @@ def load_net(kind, strength):
     if not f.exists():
         return None
     sim = UserSim(SimConfig(strength=strength))
-    net = RecNet(sim.n_users, sim.n_items, ("choice",) if kind == "supervised" else ("q",), H=sim.cfg.H)
+    net = RecNet(sim.n_users, sim.n_items, ("choice",) if kind == "supervised" else ("choice", "q", "n"), H=sim.cfg.H)
     net.load_state_dict(torch.load(f))
-    return net_policy(net.eval(), "choice" if kind == "supervised" else "q")
+    return net_policy(net.eval(), "choice" if kind == "supervised" else "mnlq")
 
 
 def agent_options(strength):
     opts = {"Supervised next-click model": load_net("supervised", strength),
-            "RL (online DQN)": load_net("dqn", strength),
+            "RL (MNL-Q, offline)": load_net("mnlq", strength),
             "Oracle: most clickable now (myopic)": POLICIES["myopic"],
             "Oracle: good items, no junk": POLICIES["quality"],
             "Popularity": POLICIES["popular"]}

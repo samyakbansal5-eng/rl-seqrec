@@ -27,7 +27,7 @@ In this model the supervised next-click recommender is exactly the myopic ($\gam
 is the $\gamma > 0$ policy, and the slate size $K$ is an explicit parameter ($K = 1$ is classic sequential
 recommendation, $K > 1$ is re-ranking). We prove two results that bound when RL can help:
 a myopic policy can be arbitrarily worse than optimal on long-term return (a dual of Theorem 4.3 of
-Silva et al., ICML 2024), and RL has no advantage at all when the user's state transition does not depend on what
+Labarca et al., ICML 2024), and RL has no advantage at all when the user's state transition does not depend on what
 the user chose.
 \end{abstract}
 
@@ -115,7 +115,7 @@ $V^*_1 / V^{\mathrm{my}}_1 \ge H c_g > n$.
 \end{proof}
 
 \begin{remark}
-Silva et al.\ (Theorem 4.3) show the converse direction for one-step metrics: an optimal RL policy can be
+Labarca et al.\ (Theorem 4.3) show the converse direction for one-step metrics: an optimal RL policy can be
 arbitrarily worse than the cross-entropy model on next-item-prediction metrics. Together the two results say that
 neither objective dominates; which recommender ``wins'' is decided by the evaluation metric and by the
 dynamics, which motivates evaluating both short-term CTR and long-term return.

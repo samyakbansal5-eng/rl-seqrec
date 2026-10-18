@@ -1,0 +1,187 @@
+s=0.0 seed=0: 152682 logged transitions (14s)
+dqn step 500: eps 0.74 loss 0.1111 buffer 67501
+dqn step 1000: eps 0.47 loss 0.1464 buffer 135059
+dqn step 1500: eps 0.21 loss 0.1575 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1460 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1256 buffer 200000
+  popular    ctr1 0.217  return 3.01  len 15.6  junk 0.00
+  supervised ctr1 0.211  return 3.07  len 15.6  junk 1.88
+  sqn        ctr1 0.220  return 3.24  len 15.6  junk 2.22
+  cql        ctr1 0.193  return 2.94  len 15.6  junk 0.32
+  dqn        ctr1 0.220  return 3.24  len 15.6  junk 1.76
+  myopic     ctr1 0.451  return 6.11  len 15.6  junk 5.02
+  quality    ctr1 0.338  return 4.86  len 15.6  junk 0.00
+s=0.25 seed=0: 100870 logged transitions (14s)
+dqn step 500: eps 0.74 loss 0.1424 buffer 43034
+dqn step 1000: eps 0.47 loss 0.2402 buffer 86669
+dqn step 1500: eps 0.21 loss 0.2108 buffer 129442
+dqn step 2000: eps 0.05 loss 0.2487 buffer 172222
+dqn step 2500: eps 0.05 loss 0.2100 buffer 200000
+  popular    ctr1 0.217  return 2.06  len 10.8  junk 0.00
+  supervised ctr1 0.217  return 1.91  len 9.6  junk 1.24
+  sqn        ctr1 0.214  return 1.87  len 9.5  junk 1.25
+  cql        ctr1 0.192  return 1.84  len 10.4  junk 0.26
+  dqn        ctr1 0.199  return 1.80  len 10.0  junk 0.77
+  myopic     ctr1 0.451  return 3.29  len 8.6  junk 2.69
+  quality    ctr1 0.338  return 3.28  len 11.3  junk 0.00
+s=0.5 seed=0: 74929 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1551 buffer 31045
+dqn step 1000: eps 0.47 loss 0.3720 buffer 62336
+dqn step 1500: eps 0.21 loss 0.4813 buffer 92829
+dqn step 2000: eps 0.05 loss 0.4358 buffer 124293
+dqn step 2500: eps 0.05 loss 0.3369 buffer 156334
+  popular    ctr1 0.217  return 1.62  len 8.5  junk 0.00
+  supervised ctr1 0.217  return 1.34  len 6.8  junk 0.84
+  sqn        ctr1 0.217  return 1.34  len 6.8  junk 0.77
+  cql        ctr1 0.187  return 1.38  len 7.8  junk 0.21
+  dqn        ctr1 0.190  return 1.28  len 7.4  junk 0.44
+  myopic     ctr1 0.451  return 2.24  len 5.8  junk 1.82
+  quality    ctr1 0.338  return 2.68  len 9.9  junk 0.00
+s=1.0 seed=0: 51366 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1681 buffer 21248
+dqn step 1000: eps 0.47 loss 0.6460 buffer 41744
+dqn step 1500: eps 0.21 loss 1.3563 buffer 63637
+dqn step 2000: eps 0.05 loss 1.5181 buffer 85043
+dqn step 2500: eps 0.05 loss 1.5700 buffer 105714
+  popular    ctr1 0.217  return 1.19  len 6.4  junk 0.00
+  supervised ctr1 0.207  return 0.82  len 4.1  junk 0.51
+  sqn        ctr1 0.213  return 0.84  len 4.3  junk 0.44
+  cql        ctr1 0.196  return 0.98  len 5.6  junk 0.08
+  dqn        ctr1 0.185  return 0.80  len 4.8  junk 0.23
+  myopic     ctr1 0.451  return 1.42  len 3.5  junk 1.18
+  quality    ctr1 0.338  return 2.05  len 8.6  junk 0.00
+s=0.0 seed=1: 151032 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.0939 buffer 68339
+dqn step 1000: eps 0.47 loss 0.1353 buffer 134476
+dqn step 1500: eps 0.21 loss 0.1341 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1177 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1602 buffer 200000
+  popular    ctr1 0.218  return 3.05  len 15.6  junk 0.00
+  supervised ctr1 0.217  return 3.18  len 15.6  junk 1.91
+  sqn        ctr1 0.228  return 3.26  len 15.6  junk 2.12
+  cql        ctr1 0.190  return 2.96  len 15.6  junk 0.48
+  dqn        ctr1 0.222  return 3.27  len 15.6  junk 2.09
+  myopic     ctr1 0.450  return 6.13  len 15.6  junk 4.99
+  quality    ctr1 0.338  return 4.92  len 15.6  junk 0.00
+s=0.25 seed=1: 100563 logged transitions (13s)
+dqn step 500: eps 0.74 loss 0.1165 buffer 44295
+dqn step 1000: eps 0.47 loss 0.2434 buffer 86903
+dqn step 1500: eps 0.21 loss 0.2486 buffer 128633
+dqn step 2000: eps 0.05 loss 0.2359 buffer 171695
+dqn step 2500: eps 0.05 loss 0.1869 buffer 200000
+  popular    ctr1 0.218  return 2.08  len 10.8  junk 0.00
+  supervised ctr1 0.209  return 1.86  len 9.6  junk 1.00
+  sqn        ctr1 0.224  return 1.91  len 9.6  junk 1.13
+  cql        ctr1 0.191  return 1.87  len 10.4  junk 0.31
+  dqn        ctr1 0.206  return 1.84  len 9.8  junk 0.87
+  myopic     ctr1 0.450  return 3.35  len 8.6  junk 2.73
+  quality    ctr1 0.338  return 3.32  len 11.3  junk 0.00
+s=0.5 seed=1: 74726 logged transitions (12s)
+dqn step 500: eps 0.74 loss 0.1593 buffer 31960
+dqn step 1000: eps 0.47 loss 0.3339 buffer 63015
+dqn step 1500: eps 0.21 loss 0.5004 buffer 93173
+dqn step 2000: eps 0.05 loss 0.3943 buffer 124738
+dqn step 2500: eps 0.05 loss 0.3434 buffer 156197
+  popular    ctr1 0.218  return 1.59  len 8.4  junk 0.00
+  supervised ctr1 0.210  return 1.31  len 6.9  junk 0.71
+  sqn        ctr1 0.220  return 1.30  len 6.6  junk 0.79
+  cql        ctr1 0.194  return 1.37  len 7.7  junk 0.23
+  dqn        ctr1 0.191  return 1.28  len 7.3  junk 0.42
+  myopic     ctr1 0.450  return 2.28  len 5.9  junk 1.85
+  quality    ctr1 0.338  return 2.67  len 9.7  junk 0.00
+s=1.0 seed=1: 50067 logged transitions (12s)
+dqn step 500: eps 0.74 loss 0.1830 buffer 21426
+dqn step 1000: eps 0.47 loss 0.6666 buffer 43534
+dqn step 1500: eps 0.21 loss 1.1000 buffer 64977
+dqn step 2000: eps 0.05 loss 1.2628 buffer 86490
+dqn step 2500: eps 0.05 loss 1.2638 buffer 107436
+  popular    ctr1 0.218  return 1.19  len 6.5  junk 0.00
+  supervised ctr1 0.221  return 0.87  len 4.2  junk 0.52
+  sqn        ctr1 0.225  return 0.85  len 4.2  junk 0.52
+  cql        ctr1 0.190  return 0.93  len 5.5  junk 0.10
+  dqn        ctr1 0.179  return 0.79  len 4.9  junk 0.21
+  myopic     ctr1 0.450  return 1.45  len 3.6  junk 1.18
+  quality    ctr1 0.338  return 2.07  len 8.5  junk 0.00
+s=0.0 seed=2: 152035 logged transitions (11s)
+dqn step 500: eps 0.74 loss 0.1112 buffer 67993
+dqn step 1000: eps 0.47 loss 0.1420 buffer 134675
+dqn step 1500: eps 0.21 loss 0.1256 buffer 200000
+dqn step 2000: eps 0.05 loss 0.1391 buffer 200000
+dqn step 2500: eps 0.05 loss 0.1069 buffer 200000
+  popular    ctr1 0.218  return 3.11  len 15.8  junk 0.00
+  supervised ctr1 0.205  return 3.15  len 15.8  junk 1.85
+  sqn        ctr1 0.206  return 3.09  len 15.8  junk 1.98
+  cql        ctr1 0.194  return 2.98  len 15.8  junk 0.51
+  dqn        ctr1 0.214  return 3.26  len 15.8  junk 1.75
+  myopic     ctr1 0.450  return 6.26  len 15.8  junk 5.13
+  quality    ctr1 0.338  return 5.00  len 15.8  junk 0.00
+s=0.25 seed=2: 99781 logged transitions (11s)
+dqn step 500: eps 0.74 loss 0.1362 buffer 43120
+dqn step 1000: eps 0.47 loss 0.2663 buffer 86470
+dqn step 1500: eps 0.21 loss 0.2646 buffer 129155
+dqn step 2000: eps 0.05 loss 0.1486 buffer 172494
+dqn step 2500: eps 0.05 loss 0.1799 buffer 200000
+  popular    ctr1 0.218  return 2.09  len 10.8  junk 0.00
+  supervised ctr1 0.212  return 1.87  len 9.5  junk 1.11
+  sqn        ctr1 0.214  return 1.86  len 9.4  junk 1.29
+  cql        ctr1 0.187  return 1.81  len 10.3  junk 0.37
+  dqn        ctr1 0.194  return 1.85  len 10.0  junk 0.67
+  myopic     ctr1 0.450  return 3.26  len 8.4  junk 2.66
+  quality    ctr1 0.338  return 3.33  len 11.4  junk 0.00
+s=0.5 seed=2: 74339 logged transitions (11s)
+dqn step 500: eps 0.74 loss 0.1432 buffer 30072
+dqn step 1000: eps 0.47 loss 0.3942 buffer 61541
+dqn step 1500: eps 0.21 loss 0.4412 buffer 92076
+dqn step 2000: eps 0.05 loss 0.4163 buffer 122346
+dqn step 2500: eps 0.05 loss 0.2731 buffer 154184
+  popular    ctr1 0.218  return 1.62  len 8.4  junk 0.00
+  supervised ctr1 0.212  return 1.29  len 6.5  junk 0.84
+  sqn        ctr1 0.221  return 1.30  len 6.6  junk 0.78
+  cql        ctr1 0.177  return 1.29  len 7.7  junk 0.19
+  dqn        ctr1 0.185  return 1.23  len 7.3  junk 0.38
+  myopic     ctr1 0.450  return 2.23  len 5.7  junk 1.83
+  quality    ctr1 0.338  return 2.66  len 9.7  junk 0.00
+s=1.0 seed=2: 51050 logged transitions (12s)
+dqn step 500: eps 0.74 loss 0.1615 buffer 22155
+dqn step 1000: eps 0.47 loss 0.5777 buffer 43246
+dqn step 1500: eps 0.21 loss 1.0747 buffer 66184
+dqn step 2000: eps 0.05 loss 1.0116 buffer 87620
+dqn step 2500: eps 0.05 loss 1.1392 buffer 107977
+  popular    ctr1 0.218  return 1.16  len 6.2  junk 0.00
+  supervised ctr1 0.218  return 0.83  len 4.2  junk 0.45
+  sqn        ctr1 0.212  return 0.81  len 4.2  junk 0.42
+  cql        ctr1 0.186  return 0.91  len 5.2  junk 0.10
+  dqn        ctr1 0.175  return 0.74  len 4.6  junk 0.19
+  myopic     ctr1 0.450  return 1.39  len 3.4  junk 1.16
+  quality    ctr1 0.338  return 1.97  len 8.2  junk 0.00
+| strength s | agent | first-slate CTR | clicks / session | session length | junk clicks | seeds |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0.0 | Popularity | 0.217 | 3.05 ± 0.04 | 15.7 | 0.00 | 3 |
+| 0.0 | Supervised (CE) | 0.211 | 3.14 ± 0.05 | 15.7 | 1.88 | 3 |
+| 0.0 | SQN-style (CE + TD aux) | 0.218 | 3.20 ± 0.08 | 15.7 | 2.11 | 3 |
+| 0.0 | Offline RL (CQL) | 0.192 | 2.96 ± 0.02 | 15.7 | 0.44 | 3 |
+| 0.0 | Online RL (DQN) | 0.218 | 3.26 ± 0.01 | 15.7 | 1.87 | 3 |
+| 0.0 | Oracle myopic | 0.450 | 6.17 ± 0.07 | 15.7 | 5.05 | 3 |
+| 0.0 | Oracle quality | 0.338 | 4.93 ± 0.06 | 15.7 | 0.00 | 3 |
+| 0.25 | Popularity | 0.217 | 2.08 ± 0.01 | 10.8 | 0.00 | 3 |
+| 0.25 | Supervised (CE) | 0.213 | 1.88 ± 0.02 | 9.6 | 1.12 | 3 |
+| 0.25 | SQN-style (CE + TD aux) | 0.217 | 1.88 ± 0.02 | 9.5 | 1.23 | 3 |
+| 0.25 | Offline RL (CQL) | 0.190 | 1.84 ± 0.02 | 10.4 | 0.31 | 3 |
+| 0.25 | Online RL (DQN) | 0.200 | 1.83 ± 0.02 | 10.0 | 0.77 | 3 |
+| 0.25 | Oracle myopic | 0.450 | 3.30 ± 0.04 | 8.6 | 2.70 | 3 |
+| 0.25 | Oracle quality | 0.338 | 3.31 ± 0.02 | 11.3 | 0.00 | 3 |
+| 0.5 | Popularity | 0.217 | 1.61 ± 0.01 | 8.4 | 0.00 | 3 |
+| 0.5 | Supervised (CE) | 0.213 | 1.32 ± 0.02 | 6.7 | 0.80 | 3 |
+| 0.5 | SQN-style (CE + TD aux) | 0.219 | 1.31 ± 0.02 | 6.7 | 0.78 | 3 |
+| 0.5 | Offline RL (CQL) | 0.186 | 1.35 ± 0.04 | 7.7 | 0.21 | 3 |
+| 0.5 | Online RL (DQN) | 0.189 | 1.27 ± 0.02 | 7.3 | 0.41 | 3 |
+| 0.5 | Oracle myopic | 0.450 | 2.25 ± 0.02 | 5.8 | 1.83 | 3 |
+| 0.5 | Oracle quality | 0.338 | 2.67 ± 0.01 | 9.7 | 0.00 | 3 |
+| 1.0 | Popularity | 0.217 | 1.18 ± 0.01 | 6.4 | 0.00 | 3 |
+| 1.0 | Supervised (CE) | 0.216 | 0.84 ± 0.02 | 4.2 | 0.49 | 3 |
+| 1.0 | SQN-style (CE + TD aux) | 0.217 | 0.83 ± 0.02 | 4.3 | 0.46 | 3 |
+| 1.0 | Offline RL (CQL) | 0.191 | 0.94 ± 0.03 | 5.5 | 0.10 | 3 |
+| 1.0 | Online RL (DQN) | 0.180 | 0.78 ± 0.03 | 4.8 | 0.21 | 3 |
+| 1.0 | Oracle myopic | 0.450 | 1.42 ± 0.03 | 3.5 | 1.17 | 3 |
+| 1.0 | Oracle quality | 0.338 | 2.03 ± 0.04 | 8.5 | 0.00 | 3 |
+

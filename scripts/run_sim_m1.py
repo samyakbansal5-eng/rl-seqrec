@@ -15,13 +15,21 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from rlrec.agents.sim_agents import collect_logs, net_policy, train_dqn, train_offline  # noqa: E402
-from rlrec.sim.policies import POLICIES  # noqa: E402
+from rlrec.agents.sim_agents import Candidates, collect_logs, net_policy, train_dqn, train_offline  # noqa: E402
+from rlrec.sim.policies import POLICIES, _no_repeat, topk  # noqa: E402
 from rlrec.sim.user_sim import SimConfig, UserSim, rollout  # noqa: E402
 
-AGENTS = ["popular", "supervised", "sqn", "cql", "dqn", "myopic", "quality"]
-LABEL = {"popular": "Popularity", "supervised": "Supervised (CE)", "sqn": "SQN-style (CE + TD aux)",
-         "cql": "Offline RL (CQL)", "dqn": "Online RL (DQN)", "myopic": "Oracle myopic", "quality": "Oracle quality"}
+AGENTS = ["popular", "rating", "supervised", "sqn", "cql", "mnlq", "dqn", "myopic", "quality"]
+LABEL = {"popular": "Popularity", "rating": "Highest estimated rating (history model)", "supervised": "Supervised (CE)",
+         "sqn": "SQN-style (CE + TD aux)", "cql": "Offline RL (CQL)", "mnlq": "Offline RL (MNL-Q, ours)",
+         "dqn": "Online RL (DQN re-ranking top-20)", "myopic": "Oracle myopic", "quality": "Oracle quality"}
+
+
+def rating_policy():
+    """Non-learned heuristic: recommend the highest rating predicted by the history model (data/history_features.py)."""
+    d = np.load(ROOT / "data/processed/ml1m_hist_feats.npz")
+    est = d["mu"] + d["user_feat"] @ d["item_feat"].T
+    return lambda sim, obs: topk(_no_repeat(sim, est[sim.u]), sim.cfg.K)
 
 
 def evaluate(cfg, policy, users, seed):
@@ -40,11 +48,14 @@ def run(strength, seed, dqn_steps, log):
     t0 = time.time()
     logs = collect_logs(sim, train_u, sessions_per_user=2, seed=seed)
     log(f"s={strength} seed={seed}: {len(logs['reward'])} logged transitions ({time.time() - t0:.0f}s)")
-    pols = {name: POLICIES[name] for name in ("popular", "myopic", "quality")}
-    for kind in ("supervised", "sqn", "cql"):
-        net = train_offline(sim, logs, kind, seed=seed)
-        pols[kind] = net_policy(net, "q" if kind == "cql" else "choice")
-    pols["dqn"] = net_policy(train_dqn(UserSim(cfg, seed=seed + 1), train_u, steps=dqn_steps, seed=seed, log=log), "q")
+    pols = {name: POLICIES[name] for name in ("popular", "myopic", "quality")} | {"rating": rating_policy()}
+    nets = {}
+    for kind in ("supervised", "sqn", "cql", "mnlq"):
+        nets[kind] = train_offline(sim, logs, kind, seed=seed)
+        pols[kind] = net_policy(nets[kind], {"cql": "q", "mnlq": "mnlq"}.get(kind, "choice"))
+    cand = Candidates(nets["supervised"], 20)
+    dqn = train_dqn(UserSim(cfg, seed=seed + 1), train_u, steps=dqn_steps, seed=seed, log=log, candidates=cand)
+    pols["dqn"] = net_policy(dqn, "q", cand)
     for name in AGENTS:
         out[name] = evaluate(cfg, pols[name], test_u, seed)
         log(f"  {name:10s} ctr1 {out[name]['ctr_first']:.3f}  return {out[name]['return']:.2f}  "
