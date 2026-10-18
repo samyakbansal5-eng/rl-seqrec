@@ -13,7 +13,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results"
 
-# silva24b Table 3 (RetailRocket, purchase targets) for GRU and SASRec
+# Labarca et al. 2024, Table 3 (RetailRocket, purchase targets) for GRU and SASRec
 SILVA = {
     ("gru", "none"): (0.1601, 0.1248, 0.2306, 0.1450), ("gru", "sqn"): (0.1921, 0.1519, 0.2698, 0.1743),
     ("gru", "eval"): (0.1962, 0.1545, 0.2718, 0.1762), ("gru", "hist"): (0.1980, 0.1549, 0.2747, 0.1770),
@@ -32,7 +32,7 @@ def nip_table():
     if not runs:
         return "No NIP runs yet.\n"
     cols = ["buy_hr@5", "buy_ndcg@5", "buy_hr@20", "buy_ndcg@20", "click_hr@20", "click_ndcg@20"]
-    lines = ["| Model | seeds | epochs | " + " | ".join(c.replace("_", " ") for c in cols) + " | Silva buy HR@5 / NG@5 / HR@20 / NG@20 |",
+    lines = ["| Model | seeds | epochs | " + " | ".join(c.replace("_", " ") for c in cols) + " | paper (Labarca et al.) buy HR@5 / NG@5 / HR@20 / NG@20 |",
              "|" + " --- |" * (len(cols) + 4)]
     for b in ["gru", "sasrec"]:
         for h in HEADS:

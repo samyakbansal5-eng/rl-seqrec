@@ -381,44 +381,53 @@ textbox(s, MX + 3 * (bw + gapx), TOP + Inches(0.15), Inches(4), Inches(0.4), "re
 textbox(s, MX + 5 * (bw + gapx), TOP + Inches(0.15), Inches(5), Inches(0.4), "controlled experiment + demo",
         size=14, color=MUTED, italic=True)
 bullets(s, MX, TOP + Inches(3.55), CW, Inches(1.6), [
-    "Status: S2, S3, S5-S9 done; S4 partial (full grid running on a Colab GPU)",
+    "Status: S2-S9 done; S4 full grid on a Colab GPU with 1 seed (more seeds next)",
     "Every number in the talk comes from a script in scripts/ (README lists the commands)",
 ], size=18, gap=10)
 
 # 6. Reproduction 1
 hdr4, rows4 = S4
-gru, sas = NIP.get("GRU4Rec (CE)"), NIP.get("SASRec (CE)")
+_c = {h.lower(): k for k, h in enumerate(hdr4)}
+_ng = _c["buy ndcg@20"]
+_pap = [k for k, h in enumerate(hdr4) if h.lower().startswith("paper")][0]
+ng = {r[0]: r[_ng] for r in rows4}
+n3 = {k: f"{float(v):.3f}" for k, v in ng.items()}   # 3 decimals, as in the report text
+pct = lambda a, b: f"{100 * (float(ng[a]) / float(ng[b]) - 1):+.0f}%"
 s = new_slide("Reproduction 1: Labarca et al. (ICML 2024) on RetailRocket", notes=(
     "Labarca, Parra and Toro Icarte claim that adding an RL loss (SQN: a Q-head trained by TD with click reward 1 and "
     "purchase reward 5) to GRU4Rec or SASRec improves next-item prediction, but that non-RL auxiliary heads (EVAL, HIST) "
     "give similar gains, so the gain is representation learning, not RL. "
     "We reproduce their protocol: time-based 80/10/10 split, hidden 64, state length 10, gamma 0.5, full-ranking "
-    "HR and NDCG, model selection on validation purchase NDCG@20. Our data matches: 195,524 sessions, 70,852 items, "
-    "57,269 purchases. "
-    f"Partial CPU results, 1 seed, 2-3 epochs: e.g. SASRec CE purchase HR@20 {sas[3] if sas else 'n/a'}, "
-    f"GRU4Rec CE purchase HR@20 {gru[3] if gru else 'n/a'}. "
-    "Our purchase metrics are about twice the paper's (0.46 vs 0.23 for GRU4Rec CE HR@20): 67% of purchase targets "
-    "equal the item viewed just before, 73% are in the 10-item history. So we compare relative differences between heads; "
-    "SQN is still below CE after 2-3 epochs, which is too early to conclude. The full grid, 8 models x 5 seeds, runs on "
-    "a Colab GPU."))
-textbox(s, MX, TOP + Inches(0.05), CW, Inches(0.75), [
+    "HR and NDCG, model selection on validation purchase NDCG@20; our data matches the paper (195,524 sessions, 70,852 "
+    "items, 57,269 purchases). The full grid, 2 backbones x 4 heads, ran on a Colab T4 GPU, 1 seed so far (paper: 5). "
+    f"SASRec reproduces the paper: purchase NDCG@20 SQN {n3['SAS-SQN']} and EVAL {n3['SAS-EVAL']} vs CE {n3['SAS']}, "
+    f"i.e. {pct('SAS-SQN', 'SAS')} and {pct('SAS-EVAL', 'SAS')}; EVAL has no RL in it, yet matches SQN, which is the paper's point. "
+    f"GRU4Rec shows no gain: CE {n3['GRU']}, SQN {n3['GRU-SQN']}, EVAL {n3['GRU-EVAL']}; one seed, 1-6% differences, "
+    "and CE stopped after 2 epochs, so this may be noise. "
+    f"HIST fails in our implementation (about {n3['GRU-HIST']} and {n3['SAS-HIST']}): it regresses raw interaction counts "
+    "with an unnormalised MSE that swamps the CE loss; that is our bug, to fix with a log(1+n) target, not evidence against "
+    "the paper. Absolute purchase metrics are about twice the paper's (GRU CE HR@20 0.46 vs 0.23) because 67% of purchase "
+    "targets equal the item viewed just before (73% in the 10-item history), so we compare relative differences."))
+textbox(s, MX, TOP + Inches(0.0), CW, Inches(0.7), [
     "**Claim:** an SQN (RL) head improves next-item prediction, but non-RL heads (EVAL, HIST) do as well, so the gain is "
-    "representation learning, not RL."], size=17)
-keep = [0, 1, 2, 4, 6]   # model, epoch, buy HR@5, buy HR@20, click HR@20
-cols = [c for c in range(len(hdr4)) if c in keep] if len(hdr4) >= 7 else list(range(len(hdr4)))
-table(s, MX, TOP + Inches(1.0), Inches(7.4), [hdr4[c] for c in cols], [[r[c] for c in cols] for r in rows4],
-      size=14, col_w=[2.6, 1.9, 1.3, 1.3, 1.4], row_h=0.42)
-textbox(s, MX, TOP + Inches(3.25), Inches(7.4), Inches(0.4), "Partial CPU run: 1 seed, 2-3 epochs (full table in report)",
+    "representation learning, not RL."], size=16)
+cols4 = [0, _c["epochs"], _c["buy hr@20"], _ng, _c["click ndcg@20"]]
+hdr_show = ["Model", "epochs", "buy HR@20", "buy NDCG@20", "click NDCG@20", "paper buy NDCG@20"]
+rows_show = [[r[k] for k in cols4] + [r[_pap].split("/")[-1].strip()] for r in rows4]
+table(s, MX, TOP + Inches(0.8), Inches(7.5), hdr_show, rows_show, size=12, col_w=[1.5, 1.0, 1.25, 1.35, 1.35, 1.55],
+      row_h=0.36, bold_rows=[k for k, r in enumerate(rows4) if r[0] in ("SAS-SQN", "SAS-EVAL")])
+textbox(s, MX, TOP + Inches(4.1), Inches(7.5), Inches(0.35),
+        "Colab T4 GPU, full grid, 1 seed (paper: 5); test metrics at best validation purchase NDCG@20",
         size=12, color=MUTED, italic=True)
-box(s, Inches(8.4), TOP + Inches(1.0), Inches(4.3), Inches(2.6), "Repeat-item finding", [
-    "**67%** of purchase targets = the item viewed just before (73% in 10-item history)",
-    "Explains purchase HR@20 ≈ 2× the paper's (0.46 vs 0.23)",
-], size=15)
-bullets(s, MX, TOP + Inches(3.75), CW, Inches(1.5), [
-    "Setup as SQN: views = clicks, add-to-cart = purchases; data matches paper (195,524 sessions, 70,852 items)",
-    "Compare **relative** gains between heads; SQN < CE after 2-3 epochs is too early to judge",
-    "**Status:** full grid (8 models × 5 seeds) running on Colab GPU",
-], size=16, gap=6)
+bullets(s, Inches(8.4), TOP + Inches(0.8), Inches(4.35), Inches(3.7), [
+    f"**SASRec reproduces:** SQN {pct('SAS-SQN', 'SAS')}, EVAL {pct('SAS-EVAL', 'SAS')} purchase NDCG@20 "
+    f"({n3['SAS-SQN']} / {n3['SAS-EVAL']} vs {n3['SAS']}); EVAL has no RL",
+    f"**GRU4Rec: no gain** (CE {n3['GRU']} vs SQN {n3['GRU-SQN']}, EVAL {n3['GRU-EVAL']}); one seed, may be noise",
+    "**HIST fails (≈0.15):** unnormalised MSE on raw counts swamps CE; our bug, fix with log(1+n)",
+], size=15, gap=8)
+callout(s, MX, TOP + Inches(4.55), CW, Inches(0.7),
+        "Repeat items: 67% of purchase targets = the item just viewed, so absolute metrics ≈ 2× the paper's; compare relative gains",
+        size=16)
 
 # 7. Reproduction 2
 hdr5, rows5 = S5
@@ -593,7 +602,7 @@ box(s, Inches(8.3), TOP + Inches(0.3), Inches(4.4), Inches(1.5), "How to run", [
 
 # 14. Limitations + plan
 s = new_slide("Limitations and plan for pre-compre", notes=(
-    "Limitations: CPU only, so RetailRocket results are partial (1 seed, 2-3 epochs) until the GPU run finishes; the "
+    "Limitations: RetailRocket has 1 seed so far (the paper uses 5) and our HIST head has a loss-scaling bug; the "
     "simulator's long-term dynamics are assumed, not learned from data, which is why s is a knob and s = 0 a control; "
     "3 seeds only; KuaiRec replaced by MovieLens-1M; datasets from GitHub mirrors. "
     "Plan: first a regime map of the RL advantage over K in {1, 3, 5, 10}, strength s and gamma, compared to the "
@@ -604,7 +613,7 @@ s = new_slide("Limitations and plan for pre-compre", notes=(
     "full RetailRocket results."))
 half = (CW - Inches(0.5)) / 2
 box(s, MX, TOP + Inches(0.15), half - Inches(0.6), Inches(3.0), "Limitations", [
-    "CPU only: RetailRocket partial (1 seed, 2-3 epochs)",
+    "RetailRocket: 1 seed so far; HIST loss-scaling bug (fix: log(1+n))",
     "Simulator dynamics **assumed**, not learned: claims are about the mechanism",
     "3 seeds; KuaiRec replaced by MovieLens-1M",
     "Rating heuristic still beats learned agents",
@@ -614,7 +623,7 @@ bullets(s, MX + half - Inches(0.1), TOP + Inches(0.15), half + Inches(0.1), Inch
     "**Neural MNL-Q re-ranker** (K > 1): item choice + value heads, exact LP slates, conservative offline",
     "**Baselines:** PISDR-style offline RL re-ranker, SQN/EVAL heads, quality re-ranking",
     "**Ablations:** logging policy, candidate set size, γ, junk vs fatigue",
-    "**Close the gap** to the rating heuristic; full RetailRocket GPU results",
+    "**Close the gap** to the rating heuristic; RetailRocket: 5 seeds, fixed HIST",
 ], size=17, gap=10)
 
 # 15. Questions
@@ -634,7 +643,7 @@ textbox(s, Inches(1.0), Inches(6.3), Inches(11.3), Inches(0.4),
 s.notes_slide.notes_text_frame.text = (
     "Close with the one-sentence takeaway and invite questions. Likely questions: why the rating heuristic wins "
     "(our learned agents only see 2 logged sessions per user), whether the simulator is realistic (dynamics assumed; s = 0 "
-    "is the control), and why SQN is below CE on RetailRocket (only 2-3 epochs; GPU run pending).")
+    "is the control), and why GRU4Rec shows no SQN gain on RetailRocket (one seed, 1-6% differences, CE stopped after 2 epochs).")
 
 prs.save(OUT)
 print("wrote", OUT, "with", len(prs.slides), "slides")

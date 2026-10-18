@@ -5,9 +5,8 @@ subtitle: "Concepts, implementation details, and likely cross-questions"
 
 > How to use this sheet: each concept is first explained in plain words (what you say aloud), then
 > in math (what you write on the board). File and function names show where something lives in the code,
-> so if the professor asks "show me", you can open it. Numbers marked **"running on GPU; to be added"**
-> are still running; say so openly instead of guessing. S8 numbers are the final 3-seed means
-> (`report/build/midsem_report.md`, section 6).
+> so if the professor asks "show me", you can open it. All numbers are final for the mid-sem:
+> S4 is the full GPU grid (1 seed) and S8 is the 3-seed means (`report/build/midsem_report.md`, sections 3 and 6).
 
 # 1. The 60-second pitch
 
@@ -40,6 +39,9 @@ user's future state (Prop. 2).
 
 **Main finding so far.**
 
+- RetailRocket (Labarca reproduction, 1 seed, GPU): on SASRec the paper's finding reproduces. SQN gives
+  +7% and the non-RL EVAL head +8% purchase NDCG@20 over CE (0.448 / 0.450 vs 0.418). GRU4Rec shows no gain,
+  and our HIST head fails because of a loss-scaling bug on our side.
 - Synthetic (Lee & Oh setting): MNL-VQL reaches about 99.7% of the optimal return, while Myopic sits 25-37% below it.
 - Simulator, oracles: with no long-term effects ($s = 0$) the myopic oracle wins (6.19 vs 4.95 clicks per
   session). With strong effects and slates ($s = 1$, $K = 5$), the quality oracle gets **2.5x** more clicks per
@@ -340,23 +342,36 @@ simulator's ground truth (the script reports the mean per-user correlation with 
   Model selection is by best **validation purchase NDCG@20**, and the test metrics of that epoch are reported.
   Grid: `scripts/run_nip_grid.sh` (2 backbones x 4 heads, `EPOCHS=5`, patience 2, 1 seed).
 - **Deviations and why:**
-  1. *Compute:* 4-core CPU, about 47-75 min per epoch (GRU-CE epoch 0: 2,839 s; GRU-SQN: 4,311 s). So we
-     used 1 seed and at most 5 epochs instead of 5 seeds and 50 epochs. A Colab GPU run is in progress.
+  1. *Compute:* the CPU build took about 47-75 min per epoch (GRU-CE epoch 0: 2,839 s), so the final grid ran on a
+     Colab T4 GPU (`notebooks/colab_s4.ipynb`): up to 50 epochs with early stopping (patience 3), but **1 seed**
+     instead of the paper's 5.
   2. *SQN target:* Polyak target plus double-DQN selection, instead of SQN's two alternately-updated
      networks. Same purpose (decorrelating the max), simpler.
   3. *HIST target clipped at 50*, to keep the MSE stable on very long sessions.
-- **Partial CPU results** (`results/nip_partial_cpu.md`, 1 seed, 2-3 epochs, test purchase metrics):
+- **Final GPU results** (1 seed; test metrics at the best-validation epoch; `midsem_report.md` section 3):
 
 | Model | best epoch | buy HR@20 | buy NDCG@20 | click HR@20 | Paper buy HR@20 / NDCG@20 |
 |---|---|---|---|---|---|
-| GRU4Rec (CE) | 2 of 3 | 0.458 | 0.343 | 0.292 | 0.2306 / 0.1450 |
-| GRU4Rec-SQN | 2 of 2 | 0.386 | 0.301 | 0.249 | 0.2698 / 0.1743 |
-| SASRec (CE) | 3 of 3 | 0.551 | 0.412 | 0.346 | 0.3509 / 0.2176 |
-| SASRec-SQN | 2 of 2 | 0.461 | 0.385 | 0.267 | 0.4227 / 0.2634 |
+| GRU4Rec (CE) | 2 | 0.460 | 0.342 | 0.291 | 0.2306 / 0.1450 |
+| GRU4Rec-SQN | 5 | 0.431 | 0.323 | 0.292 | 0.2698 / 0.1743 |
+| GRU4Rec-EVAL | 3 | 0.450 | 0.339 | 0.301 | 0.2718 / 0.1762 |
+| GRU4Rec-HIST | 13 | 0.215 | 0.157 | 0.152 | 0.2747 / 0.1770 |
+| SASRec (CE) | 3 | 0.558 | 0.418 | 0.348 | 0.3509 / 0.2176 |
+| SASRec-SQN | 5 | 0.564 | 0.448 | 0.346 | 0.4227 / 0.2634 |
+| SASRec-EVAL | 5 | 0.581 | 0.450 | 0.364 | 0.4195 / 0.2600 |
+| SASRec-HIST | 3 | 0.213 | 0.152 | 0.097 | 0.3847 / 0.2573 |
 
-  EVAL and HIST rows and the final multi-epoch numbers: **running on GPU; to be added**. At 2 epochs SQN is
-  *below* CE. The TD loss initially competes with CE for the shared representation (SQN's CE loss is higher
-  at the same epoch: 7.20 vs 6.37 for GRU at epoch 1), so no conclusion yet.
+  **What reproduces and what does not:**
+
+  - **SASRec reproduces the paper.** SQN gives +7% and EVAL +8% purchase NDCG@20 over CE. EVAL involves no RL
+    (no max, no policy improvement; it regresses the logging policy's return), yet it matches SQN. The gain
+    comes from the auxiliary signal shaping the representation, which is Labarca's point.
+  - **GRU4Rec shows no gain.** CE 0.342, SQN 0.323 (−6%), EVAL 0.339 (−1%). This is one seed, and CE
+    early-stopped at epoch 2, which suggests a flat, noisy validation curve. It may be noise.
+  - **HIST fails** (about 0.15 for both backbones). This is our bug. `losses()` regresses the raw count of
+    past interactions (clipped at 50) with an unnormalised MSE. Its scale (up to hundreds) swamps the CE loss,
+    so the shared representation serves the count and not next-item prediction. The fix is a $\log(1+n)$
+    target or a small loss weight.
 - **Absolute numbers are about 2x the paper's.** Measured cause: 67% of test purchase targets are the *same
   item as the last viewed item* (view, then add-to-cart), and 73% appear somewhere in the 10-item state. For
   click targets these are 24% / 37%. Repeat consumption makes purchases easy in our preprocessing, and the paper's
@@ -539,11 +554,33 @@ from our build environment, so we calibrated on MovieLens-1M, as Lee & Oh did in
 A fully observed matrix removes the need for a rating model; we use ALS predictions instead. The simulator
 code only needs a $\hat r$ matrix, genres, and a junk flag, so switching to KuaiRec is a data-loader change.
 
-**Q5. Why only 1 seed and at most 5 epochs on RetailRocket?**
-Compute: a 4-core CPU without a GPU, where one epoch takes 47-75 minutes per model and there are 8 models. The paper's 5
-seeds x 50 epochs would be about 2,000 CPU-hours. We use early stopping on validation purchase NDCG@20, and a Colab GPU run is
-in progress. So the S4 numbers are *partial* and we draw no conclusion yet about SQN vs CE. The point of S4 is
-to understand Labarca's argument and have the pipeline. Our main claims come from S5-S8, which do not depend on it.
+**Q5. Why only 1 seed on RetailRocket?**
+Compute. On the 4-core CPU one epoch took 47-75 minutes per model (8 models), so the final grid ran on a free
+Colab T4 GPU with up to 50 epochs and early stopping (patience 3) on validation purchase NDCG@20. That budget
+covered one seed of all 8 models; the paper uses 5. So we report single-seed differences and call the small
+ones (GRU, 1-6%) inconclusive. The SASRec gains (+7-8%) agree in direction with the paper. Our main claims
+about long-term utility come from S5-S8, which do not depend on S4.
+
+**Q5a. Why does HIST fail for you when it works in the paper?**
+It is an implementation issue on our side, not evidence against the paper. Our HIST head regresses the raw number
+of past interactions, clipped at 50, with an unnormalised MSE (`rlrec/models/seqrec.py`, `losses()`). The squared
+error is up to hundreds, while the CE loss is about 5-9, so the gradient is dominated by the count. The shared
+encoder becomes a session-length predictor and next-item accuracy collapses to about 0.15 NDCG@20. The fix is to
+regress $\log(1+n)$, or scale the target, or put a weight of about 0.01-0.1 on the auxiliary loss. This is first on the
+list for the second half.
+
+**Q5b. Why no gain on GRU4Rec?**
+With one seed the GRU differences are small: SQN is −6% and EVAL −1% vs CE. The CE run's best validation epoch
+was epoch 2 out of many, which means its validation curve was flat and noisy, so the selected CE checkpoint may
+simply be a lucky one. Also, our repeat-heavy purchase targets (67% are the last viewed item) let a GRU score
+well with CE alone, leaving less room for a representation gain. We need 3-5 seeds before claiming GRU differs
+from the paper.
+
+**Q5c. Does your result support the paper's claim?**
+Partly, and in the part that matters most. On SASRec, the non-RL EVAL head gives the same gain as SQN
+(0.450 vs 0.448 purchase NDCG@20, both about +7-8% over CE). That is the paper's central evidence that the gain
+is auxiliary-loss representation learning, not RL. GRU shows no gain in one seed (inconclusive), and our HIST
+test is invalid because of the loss-scaling bug, so we cannot yet confirm the "hist-length is the key feature" part.
 
 **Q6. Your purchase metrics are about 2x the paper's. Is your evaluation broken?**
 We measured why. 67% of test purchase targets are the *same item as the last viewed item* (people view, then
@@ -756,8 +793,8 @@ popularity trends (Hidasi & Czapp 2023). Labarca use 80/10/10 by session start t
 2. **The learned RL agent does not yet beat a domain heuristic** (rating heuristic 1.62 vs MNL-Q 1.31 at $s=1$),
    and it is far from the quality oracle (2.03). The MNL-Q gain over supervised is modest (+11% at $s=1$).
 3. **Learned agents only at $K=1$** so far; the slate results ($K=5$) are oracle-only.
-4. **S4 is partial:** 1 seed, 2-3 epochs on CPU; SQN currently below CE; absolute numbers inflated by repeat
-   purchases.
+4. **S4 has 1 seed:** SASRec reproduces (SQN/EVAL +7-8%), GRU shows no gain (inconclusive), and HIST fails
+   because of our loss-scaling bug. Absolute numbers are inflated by repeat purchases.
 5. **S8 has only 3 seeds**; differences at $s\le0.5$ are within a few standard deviations.
 6. MNL-VQL used tuned bonus constants and $\bar\sigma=1$, so no formal guarantee applies to our runs exactly.
 7. MNL assumes IIA and no position bias; real slates have position effects.
@@ -770,7 +807,7 @@ popularity trends (Hidasi & Czapp 2023). Labarca use 80/10/10 by session start t
 2. **Neural MNL-Q re-ranker with LP/bisection slate selection** for $K>1$: item-level $Q_c$, $N$ and the
    choice model plug straight into `solve_parametric` (values $f_a=Q_c(s,a)$, $f_0=N(s)$, weights $e^{v}$).
 3. **PISDR-lite** as an offline-RL re-ranking baseline.
-4. **More seeds** (at least 5) with paired standard errors, and the GPU run of S4 with EVAL/HIST rows.
+4. **More seeds** (at least 5) with paired standard errors, S4 with 3-5 seeds, and HIST re-run with a $\log(1+n)$ target or a down-weighted loss.
 5. **Ablations:** junk fraction and $\kappa$; the warm start; candidate-set size for DQN; the logging policy's
    coverage ($\varepsilon$); the MNL-Q click/no-click split vs plain Q.
 6. Analyse the toy slate model properly, and possibly prove monotonicity in $K$ under conditions.

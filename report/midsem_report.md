@@ -42,11 +42,17 @@ So only item-level values must be learned; the best slate maximises a ratio of l
 
 **What we implemented** (`rlrec/models/seqrec.py`, `scripts/train_nip.py`). Preprocessing as SQN/the paper: views are clicks, add-to-cart are purchases, sessions and items with at most 2 interactions removed, time-based 80/10/10 split. Our data matches the paper's statistics (195,524 sessions, 70,852 items, 57,269 purchases). GRU4Rec and SASRec (hidden 64, state length 10), heads CE / SQN / EVAL / HIST, $\gamma = 0.5$, lr 0.005, batch 256; full-ranking HR@k and NDCG@k for click and purchase targets; model selection on validation purchase NDCG@20.
 
-**Status.** On a 4-core CPU one epoch takes 45–75 minutes, so the full grid (8 models x 5 seeds x up to 50 epochs) is being run on a Colab GPU (`notebooks/colab_s4.ipynb`). Partial CPU results (1 seed, 2–3 epochs):
+**Results.** The full grid (2 backbones x 4 heads, up to 50 epochs with early stopping, patience 3) was run on a Colab T4 GPU (`notebooks/colab_s4.ipynb`), 1 seed so far (the paper uses 5). Test metrics at the epoch with the best validation purchase NDCG@20 ("epochs" = that epoch):
 
 {{S4_TABLE}}
 
-**Observation (important for interpretation).** Our absolute purchase metrics are about twice the paper's (e.g. GRU4Rec CE purchase HR@20 0.46 vs 0.23). We traced this to repeat consumption: **67% of purchase targets in our test set are the item the user viewed just before** (view, then add-to-cart), and 73% are in the 10-item history (24% and 37% for click targets). Any model that learns "recommend what was just viewed" scores highly on purchases. The paper's pipeline likely differs in how such repeats are handled. We therefore reproduce the *protocol* and compare *relative* differences between heads; with 2–3 epochs, SQN is still below CE, which is too early to conclude anything. The final comparison will use the GPU run.
+**What reproduces and what does not.**
+
+* **SASRec: the paper's main finding reproduces.** Both auxiliary heads beat plain cross-entropy on purchases: SQN +7% and EVAL +8% purchase NDCG@20 (0.448 and 0.450 vs 0.418), and EVAL, which involves *no* RL (it regresses the observed discounted return), is as good as SQN. This is exactly Labarca et al.'s point: the gain comes from the auxiliary signal shaping the representation, not from RL's policy improvement.
+* **GRU4Rec: no gain in our run.** CE is best (purchase NDCG@20 0.342 vs 0.323 SQN and 0.339 EVAL). With one seed and differences of 1–6%, this may be seed noise; CE also early-stopped after 2 epochs, so GRU's validation curve is flat and noisy. More seeds are needed before concluding.
+* **HIST fails in our implementation** (purchase NDCG@20 about 0.15 for both backbones, far below CE). Our HIST head regresses the raw number of past interactions (clipped at 50) with an unnormalised MSE, whose scale (hundreds) swamps the cross-entropy loss. The paper's HIST works; we expect normalising the target (e.g. $\log(1+n)$) or down-weighting the loss to fix it. This is an implementation issue on our side, not evidence against the paper, and is first on the list for the second half.
+
+**Observation (important for interpretation).** Our absolute purchase metrics are about twice the paper's (e.g. GRU4Rec CE purchase HR@20 0.46 vs 0.23). We traced this to repeat consumption: **67% of purchase targets in our test set are the item the user viewed just before** (view, then add-to-cart), and 73% are in the 10-item history (24% and 37% for click targets). Any model that learns "recommend what was just viewed" scores highly on purchases. The paper's pipeline likely differs in how such repeats are handled. We therefore reproduce the *protocol* and compare *relative* differences between heads, as above.
 
 # 4. Reproduction 2: Lee & Oh (2025) synthetic combinatorial MDP
 
@@ -114,7 +120,7 @@ The myopic oracle always has the higher first-slate CTR, but loses on long-term 
 
 # 8. Deviations from the papers and limitations
 
-* **Compute:** CPU only; the RetailRocket grid runs on a Colab GPU; the CPU results above are partial (1 seed, 2–3 epochs).
+* **Compute:** CPU only for development; the RetailRocket grid ran on a Colab GPU with 1 seed (paper: 5).
 * **SQN target network:** Polyak averaging with double-DQN action selection instead of SQN's two alternating networks; the HIST target is clipped at 50.
 * **MNL-VQL:** the linear-MDP version with $\bar\sigma = 1$ (as in the paper's own experiments), tuned bonus scales, plans recomputed every 5 episodes.
 * **Datasets:** Kaggle/GroupLens/Zenodo were not reachable, so RetailRocket (byte-identical file) and MovieLens-1M come from GitHub mirrors; KuaiRec was replaced by MovieLens-1M.
@@ -128,7 +134,7 @@ The myopic oracle always has the higher first-slate CTR, but loses on long-term 
 3. **Baselines:** a PISDR-style offline RL re-ranker (Yuan et al.), SQN/EVAL heads, and the supervised model with a diversity / quality re-ranking heuristic.
 4. **Closing the gap to the rating heuristic:** more logged data, better exploration in logs, and value targets that use the slate structure.
 5. **Ablations and analysis:** effect of logging policy, candidate set size, $\gamma$, and how much of the gain comes from avoiding junk vs reducing fatigue.
-6. **Full RetailRocket results** from the GPU run, with the repeat-item analysis.
+6. **RetailRocket:** fix the HIST loss scale, run 5 seeds, and repeat the comparison with repeated items removed from the targets.
 
 # References
 
