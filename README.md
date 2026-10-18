@@ -58,3 +58,14 @@ python scripts/train_demo_models.py && streamlit run app/demo.py
 - **Datasets.** Kaggle/GroupLens/Zenodo were not reachable from the build environment; RetailRocket (byte-identical
   events.csv) and MovieLens-1M come from public GitHub mirrors. KuaiRec was not available, so the simulator is
   calibrated on MovieLens-1M (as Lee & Oh do).
+
+## Demo dashboard
+
+```bash
+pip install -r requirements.txt
+streamlit run app/demo.py
+```
+
+The simulator data (`data/processed/ml1m_*.npz`) and the trained demo models (`results/checkpoints/`) are in the
+repository, so the dashboard runs straight after cloning. To host it, deploy `app/demo.py` from this repository on
+Streamlit Community Cloud (share.streamlit.io); `app/requirements.txt` installs a CPU-only torch.

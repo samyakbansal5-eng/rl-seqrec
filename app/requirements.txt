@@ -1,0 +1,7 @@
+# Used by Streamlit Community Cloud (it reads the requirements file next to the app first).
+# CPU-only torch keeps the install small enough for the free tier.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+numpy
+pandas
+streamlit

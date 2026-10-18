@@ -1,9 +1,13 @@
 data/raw/
-data/processed/
-results/checkpoints/
+data/processed/*
+!data/processed/ml1m_sim.npz
+!data/processed/ml1m_hist_feats.npz
+results/checkpoints/*
+!results/checkpoints/supervised-s*.pt
+!results/checkpoints/mnlq-s*.pt
 results/**/logs/
 results/**/*.npy
+report/build/
 __pycache__/
 .pytest_cache/
 *.pyc
-report/build/

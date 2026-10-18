@@ -95,6 +95,7 @@ else:
         st.subheader(title)
         p = ROOT / f
         st.markdown(p.read_text() if p.exists() else "_not produced yet_")
-    fig = ROOT / "results/fig_synthetic.png"
-    if fig.exists():
-        st.image(str(fig), caption="Episodic return on the synthetic budget MDP (Lee & Oh, Figure 1 setting)")
+    for fig, cap in [("results/fig_sim_m1.png", "Simulator: clicks per session as the long-term effect strength grows (S8)"),
+                     ("results/fig_synthetic.png", "Episodic return on the synthetic budget MDP (Lee & Oh, Figure 1 setting)")]:
+        if (ROOT / fig).exists():
+            st.image(str(ROOT / fig), caption=cap)
